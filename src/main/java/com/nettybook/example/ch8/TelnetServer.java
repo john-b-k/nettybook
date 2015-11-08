@@ -6,6 +6,7 @@ import java.util.Date;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
+import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInitializer;
 import io.netty.channel.ChannelPipeline;
@@ -67,6 +68,7 @@ class TelnetServerInitializer extends ChannelInitializer<SocketChannel>{
 	}
 }
 
+@Sharable
 class TelnetServerHandler extends SimpleChannelInboundHandler<String>{
 
 	@Override

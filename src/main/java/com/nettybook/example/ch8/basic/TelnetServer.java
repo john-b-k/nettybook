@@ -1,4 +1,4 @@
-package com.nettybook.example.ch8;
+package com.nettybook.example.ch8.basic;
 
 import java.net.InetAddress;
 import java.util.Date;

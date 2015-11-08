@@ -2,6 +2,7 @@ package com.nettybook.example.ch8;
 
 import java.net.InetAddress;
 import java.util.Date;
+import java.util.logging.Logger;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -23,31 +24,29 @@ import io.netty.handler.logging.LogLevel;
 import io.netty.handler.logging.LoggingHandler;
 
 public class TelnetServer {
+	private static final Logger logger = Logger.getLogger(TelnetServer.class.getName());
 	private static final int PORT =8023;
-	
+
 	public static void main(String[] args){
 		EventLoopGroup boss = new NioEventLoopGroup(1);
 		EventLoopGroup worker = new NioEventLoopGroup();
 		
 		try{
-			System.out.println("초기화 실행");
+			logger.info("초기화 실행");
 			ServerBootstrap b = new ServerBootstrap();
 			b.group(boss,worker).
 			channel(NioServerSocketChannel.class).
 			handler(new LoggingHandler(LogLevel.INFO)).
 			childHandler(new TelnetServerInitializer());
 			
-			
-			System.out.println("ChannelFuture 실행");
 			ChannelFuture future = b.bind(PORT).sync();
-			System.out.println("closeFuture 실행");
+			logger.info("bind port 실행");
 			future.channel().closeFuture().sync();
-			System.out.println("퓨처 모두실행 실행");
+			logger.info("channel closeFuture 실행");
 		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}finally{
-			System.out.println("Finally 실행");
+			logger.info("Finally 실행");
 			boss.shutdownGracefully();
 			worker.shutdownGracefully();
 		}
@@ -70,7 +69,8 @@ class TelnetServerInitializer extends ChannelInitializer<SocketChannel>{
 
 @Sharable
 class TelnetServerHandler extends SimpleChannelInboundHandler<String>{
-
+	private static final Logger logger = Logger.getLogger(TelnetServerHandler.class.getName());
+	
 	@Override
 	public void channelActive(ChannelHandlerContext ctx) throws Exception {
 		ctx.write("Welcome. "+InetAddress.getLocalHost().getHostName()+" Connected!\r\n");
@@ -96,14 +96,14 @@ class TelnetServerHandler extends SimpleChannelInboundHandler<String>{
 		ChannelFuture future = ctx.write(response);
 		
 		if(close){
-			System.out.println("ChannelFutureListener 실행");
+			logger.info("ChannelFutureListener 실행");
 			future.addListener(ChannelFutureListener.CLOSE);
 		}
 	}
 	
 	@Override
 	public void channelReadComplete(ChannelHandlerContext ctx){
-		System.out.println("channelReadComplete 실행");
+		logger.info("channelReadComplete 실행");
 		ctx.flush();
 	}
 	
@@ -112,5 +112,4 @@ class TelnetServerHandler extends SimpleChannelInboundHandler<String>{
 		cause.printStackTrace();
 		ctx.close();
 	}
-	
 }

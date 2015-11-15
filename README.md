@@ -1,5 +1,5 @@
 # nettystudy
-네티 예제 코드 정리
+네티 서버 실습
 
 Pre Environment
 
